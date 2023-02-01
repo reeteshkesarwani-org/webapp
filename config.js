@@ -1,11 +1,12 @@
 const { query } = require("express");
 let mysql=require('mysql');
+require('dotenv').config();
 
 let config = mysql.createConnection( {
-  host: "localhost",
-  user: "root",
-  password: "root1234",
-  database:"mydb"
+  host: process.env.DATABASE_HOST,
+  user: process.env.DATABASE_USER,
+  password: process.env.DATABASE_PASSWORD,
+  database:process.env.DATABASE_NAME
   });
 
   
