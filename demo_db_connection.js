@@ -3,7 +3,7 @@ var express=require('express');
 const routes = require('./routes/routes');
 var app=express()
 app.use(express.json())
-
+require('dotenv').config();
 
 
 // con.connect(function(err) {
@@ -36,7 +36,7 @@ app.use(express.json())
 //   })
 // })
 routes(app);
-app.listen(3000,(err)=>
+app.listen(process.env.PORT,(err)=>
 {
   if(err)
   {
