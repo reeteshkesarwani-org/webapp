@@ -4,7 +4,8 @@
   "description": "",
   "main": "demo_db_connection.js",
   "scripts": {
-    "test": "mocha --recursive --exit"
+    "test": "mocha --recursive --exit",
+    "nodemon": "nodemon app.js"
   },
   "author": "",
   "license": "ISC",
@@ -15,6 +16,8 @@
     "mocha": "^10.2.0",
     "mysql": "^2.18.1",
     "mysql2": "^3.0.1",
+    "nodemon": "^2.0.20",
+    "sequelize": "^6.28.0",
     "supertest": "^6.3.3"
   }
 }
