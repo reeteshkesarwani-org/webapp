@@ -2,6 +2,7 @@ var userService = require("../services/services");
 var bcrypt = require('bcrypt');
 var config = require("../config")
 var mysql = require("mysql");
+var db = require("../configuration/sequelize")
 const { response } = require("express");
 
 
@@ -42,9 +43,13 @@ exports.createUser = async function (req, res) {
     var last_name = req.body.last_name;
     var username = req.body.username;
     var password = req.body.password;
+    if(!first_name || !last_name || !username || !password)
+    {
+        return res.status(206).send({message: "data is incomplete please provide value for first_name,last_name,password and username"})
+    }
     var hashedPassword = await bcrypt.hash(req.body.password, 10);
     try {
-       // console.log("under try function");
+        // console.log("under try function");
         let valfirst_Name = false;
         let vallast_Name = false;
         let val_Username = false;
@@ -76,30 +81,30 @@ exports.createUser = async function (req, res) {
         }
         if (valfirst_Name && vallast_Name && val_Username && val_Password) {
             console.log("before query");
-            config.query('SELECT count(*) as cnt FROM users WHERE username = ?', [username], async (err, response) => {
-                if (response[0].cnt != 0) {
-                    return res.status(400).json('bad request email already present');
-                }
-                else {
-                    config.query('insert into users values(null,?,?,?,?,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP)', [username, first_name, last_name, hashedPassword], (err, result) => {
-                        if (err) {
-                            throw err;
-                        }
-                        else{
-                            config.query('SELECT * FROM users WHERE username = ?', [username], async (err, response) => {
-                                delete response[0].password;
-                                return res.status(201).json(response[0]);
-                            });
-                        }
-                    })
-                }
-
-            });
-
-
+            const p1 = await db.user.findOne({ where: { username: req.body.username } });
+            if (p1 === null) {
+                //var hashedPassword = await bcrypt.hash(req.body.password, 10);
+            if(Object.keys(req.body).length>4)
+            {
+                return res.status(403).json("Extra field value provided ,please provide value for first_name,last_name,password and username");
+            }
+            const user1 = await db.user.build(
+                {
+                    first_name: first_name,
+                    last_name: last_name,
+                    password: hashedPassword,
+                    username: username,
+                });
+                await user1.save();
+                return res.status(200).json(user1);
+            }
+            else {
+                return res.status(400).json("already present its a bad request");
+            }
         }
     }
     catch (e) {
+        console.log("reachedhere in error");
         return res.status(400).json({ status: 400, message: e.message });
     }
 
@@ -112,123 +117,113 @@ exports.getUser = async function (req, res) {
     if (!auth || auth.indexOf('Basic ') === -1) return res.status(403).json("Forbidden Request")
     const base64Credentials = auth.split(' ')[1];
     const credentials = Buffer.from(base64Credentials, 'base64').toString('ascii');
-    const [username, password] = credentials.split(':');
-    if (!username || !password) {
+    const [usernamegetting, passwordgetting] = credentials.split(':');
+    if (!usernamegetting || !passwordgetting) {
         return res.status(403).json("Invalid Authentication Details");
     }
 
-    config.query('select * from users where username=?', [username], async (err, result) => {
-       
-       
-        if (err) {
-            return res.status(400).json('Invalid Authentication Details');
 
-        }
-
-        console.log(req.params.userid);
-        console.log(result[0].id);
+    const usr= await db.user.findOne({ where: { username: usernamegetting} })
+   // console.log(usr);
+    if(usr===null)
+    {
+        return res.status(400).json('Invalid Authentication Details');
+    }
+    else
+   {
         let passcheck = false;
-
-        let pass = result[0].password;
-
-        //console.log(await bcrypt.compare(password, pass));
-        if (await bcrypt.compare(password, pass)) {
+        const passwordstoreduser=usr.password;
+       // var hashedPassword = await bcrypt.hash(passwordstoreduser, 10);
+        if (await bcrypt.compare(passwordgetting,passwordstoreduser)) {
             passcheck = true;
         }
-        console.log(passcheck);
-
-        if (req.params.userid != result[0].id) {
-            return res.status(403).json("Invalid Authentication Details");
+        if(req.params.userid != usr.id)
+        {
+            return res.status(403).json("Invalid ID Details");
         }
         if (passcheck == false) {
             return res.status(401).json('Invalid Credentials');
         }
         else {
-            delete result[0].password;
-            return res.status(200).json(result);
+            
+            const jsonvalue=usr.toJSON();
+            delete jsonvalue.password;
+            return res.status(200).json(jsonvalue);
         }
-    })
+
+   }
 };
 
 
 
 exports.editUser = async function (req, res) {
-    console.log('hello from edit user');
     const auth = req.headers.authorization;
     if (!auth || auth.indexOf('Basic ') === -1) return res.status(403).json("Forbidden Request")
     const base64Credentials = auth.split(' ')[1];
     const credentials = Buffer.from(base64Credentials, 'base64').toString('ascii');
-    const [username, password] = credentials.split(':');
-    if (!username || !password) {
+    const [usernamegetting, passwordgetting] = credentials.split(':');
+    if (!usernamegetting || !passwordgetting) {
         return res.status(403).json("Invalid Authentication Details");
     }
-
-    config.query('select * from users where username=?', [username], async (err, result) => {
-
-        console.log(req.params.userid);
-        //console.log(result[0].id);
+    const usr= await db.user.findOne({ where: { username: usernamegetting} })
+    if(usr===null)
+    {
+        return res.status(400).json('Invalid Authentication Details');
+    }
+    else
+   {
         let passcheck = false;
-        let updated_first_Name = req.body.first_name;
-        let updated_last_Name = req.body.last_name;
-        let updated_password = req.body.password;
-        let updated_username = req.body.username;
-
-        let pass = result[0].password;
-
-        //console.log(await bcrypt.compare(password, pass));
-        if (!updated_first_Name || !updated_last_Name || !updated_password || !updated_username) {
-            return res.status(403).json("partial content provided ,please provide value for first_name,last_name,password and username");
-        }
-        if (updated_username != result[0].username) {
-            return res.status(401).json("invalid username provided, we can't update the value for username");
-        }
-        if (await bcrypt.compare(password, pass)) {
+        const passwordstoreduser=usr.password;
+       // var hashedPassword = await bcrypt.hash(passwordstoreduser, 10);
+      
+        if (await bcrypt.compare(passwordgetting,passwordstoreduser)) {
             passcheck = true;
         }
-        console.log(passcheck);
-
-        if (req.params.userid != result[0].id) {
-            return res.status(403).json("Invalid Authentication Details");
-        }
-        if (err) {
-            console.log(err);
-            return res.status(400).json('Invalid Authentication Details');
-
+        if(req.params.userid != usr.id)
+        {
+            return res.status(403).json("Invalid ID Details");
         }
         if (passcheck == false) {
             return res.status(401).json('Invalid Credentials');
         }
+
+        let updated_first_Name = req.body.first_name;
+        let updated_last_Name = req.body.last_name;
+        let updated_password = req.body.password;
+        let updated_username = req.body.username;
+        if (!updated_first_Name || !updated_last_Name || !updated_password || !updated_username) {
+            return res.status(206).json("partial content provided ,please provide value for first_name,last_name,password and username");
+        }
+
+
+        //console.log(await bcrypt.compare(password, pass));
+       
+        if(Object.keys(req.body).length>4)
+        {
+            return res.status(400).json("Extra field value provided ,please provide value for first_name,last_name,password and username");
+        }
+        if(updated_username!=usr.username)
+        {
+            return res.status(403).json("we can't update the username for the user");
+
+        }
         else {
 
             var hashedPassword = await bcrypt.hash(updated_password, 10);
-            console.log(pass);
-            console.log(hashedPassword);
-            console.log(updated_password);
-            console.log("just before the update user service in the controller");
-            /*config.query('UPDATE users SET values(null,?,?,?,?,?,CURRENT_TIMESTAMP) WHERE username = ?',[updatedemail,updatedfirstNamestr,updatedlastnamestr,hashedPassword,result[0].created_on,updatedemail],(error,result)=>{*/
-            config.query('UPDATE users SET first_name = ?,last_name = ?,password = ?,account_updated  = CURRENT_TIMESTAMP WHERE username = ?', [updated_first_Name, updated_last_Name, hashedPassword, updated_username], (error, result) => {
-                if (error) {
-                    console.log(error);
-                    return res.status(400).json("Error creating user in Database.");
-                }
-                else {
-                    return res.status(204).json("Updated.");
-
-                }
-            });
-            // if(await (updatedfirstNamestr!=result[0].firstname) || await (updatedlastnamestr!=result[0].lastname))
-            // {
-            //    return userService.UpdateFirstNameLastName(updatedfirstNamestr,updatedlastnamestr,result[0].email);
-            // }
-
+            await usr.update({
+                        first_name: updated_first_Name,
+                        last_name: updated_last_Name,
+                        password: hashedPassword,
+            })
+            return res.status(204).json("value got updated for the user")
+              }
         }
-        //return user;
-    })
+     
 }
+
 
 exports.health = async function (req, res) {
     return res.status(200).json("server is healthy ");
 }
-
 
 
