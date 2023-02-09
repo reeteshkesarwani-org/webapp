@@ -127,7 +127,7 @@ exports.getUser = async function (req, res) {
    // console.log(usr);
     if(usr===null)
     {
-        return res.status(400).json('Invalid Authentication Details');
+        return res.status(401).json('Invalid Authentication Details');
     }
     else
    {
@@ -139,7 +139,7 @@ exports.getUser = async function (req, res) {
         }
         if(req.params.userid != usr.id)
         {
-            return res.status(403).json("Invalid ID Details");
+            return res.status(401).json("Invalid ID Details");
         }
         if (passcheck == false) {
             return res.status(401).json('Invalid Credentials');
@@ -168,7 +168,7 @@ exports.editUser = async function (req, res) {
     const usr= await db.user.findOne({ where: { username: usernamegetting} })
     if(usr===null)
     {
-        return res.status(400).json('Invalid Authentication Details');
+        return res.status(401).json('Invalid Authentication Details');
     }
     else
    {
@@ -181,7 +181,7 @@ exports.editUser = async function (req, res) {
         }
         if(req.params.userid != usr.id)
         {
-            return res.status(403).json("Invalid ID Details");
+            return res.status(401).json("Invalid ID Details");
         }
         if (passcheck == false) {
             return res.status(401).json('Invalid Credentials');

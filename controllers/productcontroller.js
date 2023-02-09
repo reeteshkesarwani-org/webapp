@@ -90,7 +90,7 @@ exports.createProduct = async function (req, res) {
 
             );
             await product1.save();
-            return res.status(200).json(product1);
+            return res.status(201).json(product1);
         }
         else {
             return res.status(400).json("already present its a bad request");
@@ -109,11 +109,25 @@ exports.updateProduct = async function (req, res) {
     if (!usernamegetting || !passwordgetting) {
         return res.status(403).json("Invalid Authentication Details");
     }
-    const usr = await db.user.findOne({ where: { username: usernamegetting } })
+    const usr = await db.user.findOne({ where: { username: usernamegetting } });
+    const product1= await db.product.findOne({where:{id:req.params.productid}});
+    if(product1===null)
+    {
+        return res.status(404).json("Product Not Found");
+    }
+    const productownerid=product1.owner_user_id;
+    
     if (usr === null) {
         return res.status(400).json('Invalid Authentication Details');
     }
+    if(productownerid!=usr.id)
+    {
+        return res.status(403).json('Forbidden request');
+    }
     else {
+        if (!req.body.name || !req.body.description || !req.body.manufacturer || !req.body.quantity || !req.body.sku) {
+            return res.status(206).send({ message: "data is incomplete please provide value for name,manufacturer, description, sku and quantity" })
+        }
         let passcheck = false;
         const passwordstoreduser = usr.password;
         // var hashedPassword = await bcrypt.hash(passwordstoreduser, 10);
@@ -134,11 +148,9 @@ exports.updateProduct = async function (req, res) {
         }
         else {
 
-            if (!req.body.name || !req.body.description || !req.body.manufacturer || !req.body.quantity || !req.body.sku) {
-                return res.status(206).send({ message: "data is incomplete please provide value for name,manufacturer, description, sku and quantity" })
-            }
+            
             if (Object.keys(req.body).length > 5) {
-                return res.status(403).json("Extra field value provided ,please provide value for first_name,last_name,password and username");
+                return res.status(403).json("Extra field value provided ,please provide value for first_name,last_name,password ,sku and username");
             }
 
             // if(req.body.quantity)
@@ -146,8 +158,8 @@ exports.updateProduct = async function (req, res) {
             if ((typeof req.body.quantity) != "number") {
                 return res.status(400).json('Product Quantity must be number');
             }
-            if (req.body.quantity > 100 || req.body.quantity < 1) {
-                return res.status(400).json('Product Quantity is greater than 100 or less than 1 please keep between 0-100 or equal');
+            if (req.body.quantity > 100 || req.body.quantity < 0) {
+                return res.status(400).json('Product Quantity is greater than 100 or less than 0 please keep between 0-100 or equal');
             }
             await p2.update({
                 name: req.body.name,
@@ -174,9 +186,20 @@ exports.patchProduct = async function (req, res) {
     if (!usernamegetting || !passwordgetting) {
         return res.status(403).json("Invalid Authentication Details");
     }
-    const usr = await db.user.findOne({ where: { username: usernamegetting } })
+    const usr = await db.user.findOne({ where: { username: usernamegetting } });
+    const product1= await db.product.findOne({where:{id:req.params.productid}});
+    if(product1===null)
+    {
+        return res.status(404).json("Product Not Found");
+    }
+    const productownerid=product1.owner_user_id;
+    
     if (usr === null) {
         return res.status(400).json('Invalid Authentication Details');
+    }
+    if(productownerid!=usr.id)
+    {
+        return res.status(403).json('Forbidden request');
     }
     else {
         let passcheck = false;
@@ -260,45 +283,12 @@ exports.patchProduct = async function (req, res) {
 
 
 exports.getProduct = async function (req, res) {
-    const auth = req.headers.authorization;
-    if (!auth || auth.indexOf('Basic ') === -1) return res.status(403).json("Forbidden Request")
-    const base64Credentials = auth.split(' ')[1];
-    const credentials = Buffer.from(base64Credentials, 'base64').toString('ascii');
-    const [usernamegetting, passwordgetting] = credentials.split(':');
-    if (!usernamegetting || !passwordgetting) {
-        return res.status(403).json("Invalid Authentication Details");
-    }
-
-
-    const usr = await db.user.findOne({ where: { username: usernamegetting } })
-    // console.log(usr);
+    const usr = await db.product.findOne({ where: { id: req.params.productid } })
     if (usr === null) {
-        return res.status(400).json('Invalid Authentication Details');
+        return res.status(404).json('Product not Found');
     }
     else {
-        let passcheck = false;
-        const passwordstoreduser = usr.password;
-        // var hashedPassword = await bcrypt.hash(passwordstoreduser, 10);
-        if (await bcrypt.compare(passwordgetting, passwordstoreduser)) {
-            passcheck = true;
-        }
-        const p11 = await db.product.findOne({ where: { id: req.params.productid } })
-        if (p11 === null) {
-            return res.status(403).json("Invalid product id");
-        }
-        if (passcheck == false) {
-            return res.status(401).json('Invalid Credentials');
-        }
-        console.log(p11.owner_user_id);
-        console.log(usr.id);
-        if (p11.owner_user_id == usr.id && passcheck == true) {
-            const jsonvalue = p11.toJSON();
-            return res.status(200).json(jsonvalue);
-        }
-        else {
-            return res.status(401).json("The entered userid and product created do not match please enter the correct value for the user id")
-        }
-
+            return res.status(200).json(usr);
     }
 };
 
@@ -327,7 +317,7 @@ exports.deleteProduct = async function (req, res) {
         }
         const p11 = await db.product.findOne({ where: { id: req.params.productid } })
         if (p11 === null) {
-            return res.status(403).json("Invalid product id");
+            return res.status(404).json("Product Not Found");
         }
         if (passcheck == false) {
             return res.status(401).json('Invalid Credentials');
@@ -351,5 +341,3 @@ exports.deleteProduct = async function (req, res) {
 exports.health = async function (req, res) {
     return res.status(200).json("server is healthy ");
 }
-
-
