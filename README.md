@@ -1,7 +1,7 @@
 # webapp-assignment1
 
 Create As a user, I want to create an account by providing the following information.
-  1.  Email Address
+  1.  Email Address1
   2.  Password
   3. First Name
   4. Last Name
