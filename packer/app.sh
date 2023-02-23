@@ -23,18 +23,20 @@ mysql -u root --password=$MYSQL_ROOT_PASSWORD --connect-expired-password -e "ALT
 
 
 sudo yum install unzip -y
-cd ~/ && unzip webapp.zip
-cd ~/webapp && npm i 
+mkdir ~/webapp
 
- cd ~/webapp
- set environment variables
- sudo touch .env
- sudo chmod 777 .env
- echo "DATABASE_HOST=$DATABASE_HOST" >> .env
- echo "PORT=$PORT" >> .env
- echo "DATABASE_USER=$DATABASE_USER" >> .env
- echo "DATABASE_PASSWORD=$DATABASE_PASSWORD" >> .env
- echo "DATABASE_NAME=$DATABASE_NAME" >> .env   
+unzip webapp.zip -d ~/webapp
+cd ~/webapp && npm i
+
+cd ~/webapp
+set environment variables
+sudo touch .env
+sudo chmod 777 .env
+echo "DATABASE_HOST=$DATABASE_HOST" >> .env
+echo "PORT=$PORT" >> .env
+echo "DATABASE_USER=$DATABASE_USER" >> .env
+echo "DATABASE_PASSWORD=$DATABASE_PASSWORD" >> .env
+echo "DATABASE_NAME=$DATABASE_NAME" >> .env   
 
 
 

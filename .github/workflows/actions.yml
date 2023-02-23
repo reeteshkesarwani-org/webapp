@@ -39,6 +39,5 @@ jobs:
           packer init ami.pkr.hcl
           packer validate ami.pkr.hcl
           packer build \
-          -var "zip_path=/home/runner/work/webapp/webapp/app_artifact/webapp.zip" \
           -var-file=variables.pkrvars.hcl  ami.pkr.hcl
 
