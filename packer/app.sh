@@ -26,7 +26,15 @@ sudo yum install unzip -y
 cd ~/ && unzip webapp.zip
 cd ~/webapp && npm i 
 
-
+ cd ~/webapp
+ set environment variables
+ sudo touch .env
+ sudo chmod 777 .env
+ echo "DATABASE_HOST=$DATABASE_HOST" >> .env
+ echo "PORT=$PORT" >> .env
+ echo "DATABASE_USER=$DATABASE_USER" >> .env
+ echo "DATABASE_PASSWORD=$DATABASE_PASSWORD" >> .env
+ echo "DATABASE_NAME=$DATABASE_NAME" >> .env  
 
 
 
