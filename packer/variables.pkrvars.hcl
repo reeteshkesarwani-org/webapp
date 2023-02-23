@@ -1,1 +1,6 @@
 
+    DATABASE_HOST=""
+    PORT=""
+    DATABASE_USER=""
+    DATABASE_PASSWORD=""
+    DATABASE_NAME=""

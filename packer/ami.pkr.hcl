@@ -10,6 +10,27 @@ variable "zip_path" {
   type      = string
   default   = ""
 }
+variable "DATABASE_HOST" {
+  type      = string
+  default   = ""
+}
+variable "PORT" {
+  type      = string
+  default   = ""
+}
+variable "DATABASE_USER" {
+  type      = string
+  default   = ""
+}
+variable "DATABASE_PASSWORD" {
+  type      = string
+  default   = ""
+}
+variable "DATABASE_NAME" {
+  type      = string
+  default   = ""
+}
+
 
 locals {
   timestamp = regex_replace(timestamp(), "[- TZ:]", "")
@@ -52,6 +73,13 @@ build {
 
   
   provisioner "shell" {
+       environment_vars = [
+    "DATABASE_HOST=${var.DATABASE_HOST}",
+    "PORT=${var.PORT}",
+    "DATABASE_USER=${var.DATABASE_USER}",
+    "DATABASE_PASSWORD=${var.DATABASE_PASSWORD}",
+    "DATABASE_NAME=${var.DATABASE_NAME}"
+  ]
 
   script = "./app.sh"
   
