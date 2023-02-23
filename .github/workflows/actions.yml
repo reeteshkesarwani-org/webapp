@@ -7,6 +7,7 @@ jobs:
   build:
     name: packer workflow
     runs-on: ubuntu-latest
+    environment: database
     strategy: 
         matrix:
             node-version: [18.x]
@@ -32,12 +33,7 @@ jobs:
 
       
       - name: Build Template
-        env:
-          DATABASE_HOST: ${{ env.DATABASE_HOST }}
-          PORT: ${{ env.PORT }}
-          DATABASE_USER: ${{ env.DATABASE_USER }}
-          DATABASE_PASSWORD: ${{ env.DATABASE_PASSWORD }}
-          DATABASE_NAME: ${{ env.DATABASE_NAME }}
+        
         run: |
           cd packer
           packer init ami.pkr.hcl
