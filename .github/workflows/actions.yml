@@ -39,5 +39,5 @@ jobs:
           packer init ami.pkr.hcl
           packer validate ami.pkr.hcl
           packer build \
-          -var "zip_path=/home/runner/work/webapp/webapp/app_artifact/webapp.zip" ami.pkr.hcl \
-          -var-file=variables.pkrvars.hcl -var "DATABASE_HOST=${{ env.DATABASE_HOST }}" -var "PORT=${{ env.PORT }}" -var "DATABASE_USER=${{ env.DATABASE_USER }}"  -var "DATABASE_PASSWORD=${{ env.DATABASE_PASSWORD }}"  -var "DATABASE_NAME=${{ env.DATABASE_NAME }}" ami.pkr.hcl
+          -var "zip_path=/home/runner/work/webapp/webapp/app_artifact/webapp.zip" \
+          -var-file=variables.pkrvars.hcl  ami.pkr.hcl
