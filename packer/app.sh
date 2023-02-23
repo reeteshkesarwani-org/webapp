@@ -34,7 +34,7 @@ cd ~/webapp && npm i
  echo "PORT=$PORT" >> .env
  echo "DATABASE_USER=$DATABASE_USER" >> .env
  echo "DATABASE_PASSWORD=$DATABASE_PASSWORD" >> .env
- echo "DATABASE_NAME=$DATABASE_NAME" >> .env  
+ echo "DATABASE_NAME=$DATABASE_NAME" >> .env   
 
 
 

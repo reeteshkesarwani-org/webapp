@@ -39,5 +39,6 @@ jobs:
           packer init ami.pkr.hcl
           packer validate ami.pkr.hcl
           packer build \
-          -var "zip_path=/home/runner/work/webapp/webapp/app_artifact/webapp.zip" ami.pkr.hcl \
-          -var-file=variables.pkrvars.hcl  "DATABASE_HOST=localhost"  "PORT=3000" -var "DATABASE_USER=root"  -var "DATABASE_PASSWORD=Root@123"  -var "DATABASE_NAME=test3" ami.pkr.hcl
+          -var "zip_path=/home/runner/work/webapp/webapp/app_artifact/webapp.zip" \
+          -var-file=variables.pkrvars.hcl  ami.pkr.hcl
+
