@@ -23,3 +23,9 @@ jobs:
       - run: npm ci
       - run: npm install
       - run: npm test
+      - name: Vlidate Template
+        
+        run: |
+          cd packer
+          packer init ami.pkr.hcl
+          packer validate ami.pkr.hcl
