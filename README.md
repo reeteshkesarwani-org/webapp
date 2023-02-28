@@ -21,3 +21,5 @@ How to start a application
 1. npm install
 
 2. node demo_db_connection
+
+test
