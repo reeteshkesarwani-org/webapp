@@ -6,10 +6,7 @@ packer {
     }
   }
 }
-variable "zip_path" {
-  type      = string
-  default   = ""
-}
+
 variable "DATABASE_HOST" {
   type      = string
   default   = ""
