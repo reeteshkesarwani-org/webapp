@@ -3,7 +3,7 @@ var express=require('express');
 const routes = require('./routes/routes');
 var app=express()
 app.use(express.json())
-require('dotenv').config();
+
 
 
 routes(app);
