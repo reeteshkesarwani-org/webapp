@@ -95,7 +95,9 @@ exports.createUser = async function (req, res) {
                     username: username,
                 });
                 await user1.save();
-                return res.status(200).json(user1);
+                const jsonvalue1=user1.toJSON();
+                delete jsonvalue1.password;
+                return res.status(200).json(jsonvalue1);
             }
             else {
                 return res.status(400).json("already present its a bad request");
