@@ -4,7 +4,6 @@ const Product = db.product;
 const Crypto = require("crypto");
 const User = db.user;
 const bcrypt=require('bcrypt');
-var config = require("../config")
 var mysql = require("mysql");
 
 const { S3Client,DeleteObjectCommand, PutObjectCommand } = require("@aws-sdk/client-s3");

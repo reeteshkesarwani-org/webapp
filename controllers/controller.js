@@ -1,6 +1,5 @@
 var userService = require("../services/services");
 var bcrypt = require('bcrypt');
-var config = require("../config")
 var mysql = require("mysql");
 var db = require("../configuration/sequelize")
 const { response } = require("express");
