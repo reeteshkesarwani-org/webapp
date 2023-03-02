@@ -1,7 +1,9 @@
 const e = require("express");
 //var User = require("../models/model");
+
 var mysql = require("mysql");
 const { response } = require("express");
+
 
 exports.createUser = async function (firstname, lastname, email, password) {
     try {
