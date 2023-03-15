@@ -49,11 +49,11 @@ const addImage = async (req, res, next) => {
     const credentials = Buffer.from(base64Credentials, 'base64').toString('ascii');
     const [usernamegetting, passwordgetting] = credentials.split(':');
     if (!usernamegetting || !passwordgetting) {
-        return res.status(403).json("Invalid Authentication Details");
+        return res.status(401).json("Invalid Authentication Details");
     }
     const usr = await db.user.findOne({ where: { username: usernamegetting } })
     if (usr === null) {
-        return res.status(400).json('Invalid Authentication Details');
+        return res.status(401).json('Invalid Authentication Details');
     }
     else {
         let passcheck = false;
@@ -71,7 +71,7 @@ const addImage = async (req, res, next) => {
   
       const productIdCheck = parseInt(productid);
       if (productIdCheck != productid) {
-        return res.status(400).send({
+        return res.status(403).send({
           error: "Bad Request: Invalid Product Id",
         });
       }
@@ -121,11 +121,11 @@ const addImage = async (req, res, next) => {
     const credentials = Buffer.from(base64Credentials, 'base64').toString('ascii');
     const [usernamegetting, passwordgetting] = credentials.split(':');
     if (!usernamegetting || !passwordgetting) {
-        return res.status(403).json("Invalid Authentication Details");
+        return res.status(401).json("Invalid Authentication Details");
     }
     const usr = await db.user.findOne({ where: { username: usernamegetting } })
     if (usr === null) {
-        return res.status(400).json('Invalid Authentication Details');
+        return res.status(401).json('Invalid Authentication Details');
     }
     else {
         let passcheck = false;
@@ -144,7 +144,7 @@ const addImage = async (req, res, next) => {
           const productIdCheck = parseInt(productid);
           if (productIdCheck != productid) {
             return res.status(400).send({
-              error: "Bad Request: Invalid Product Id",
+              error: "Bad Request: Invalid product Id",
             });
           }
       
@@ -187,11 +187,11 @@ const addImage = async (req, res, next) => {
     const credentials = Buffer.from(base64Credentials, 'base64').toString('ascii');
     const [usernamegetting, passwordgetting] = credentials.split(':');
     if (!usernamegetting || !passwordgetting) {
-        return res.status(403).json("Invalid Authentication Details");
+        return res.status(401).json("Invalid Authentication Details");
     }
     const usr = await db.user.findOne({ where: { username: usernamegetting } })
     if (usr === null) {
-        return res.status(400).json('Invalid Authentication Details');
+        return res.status(401).json('Invalid Authentication Details');
     }
     else {
         let passcheck = false;

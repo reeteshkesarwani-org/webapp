@@ -44,7 +44,7 @@ exports.createUser = async function (req, res) {
     var password = req.body.password;
     if(!first_name || !last_name || !username || !password)
     {
-        return res.status(206).send({message: "data is incomplete please provide value for first_name,last_name,password and username"})
+        return res.status(400).send({message: "data is incomplete please provide value for first_name,last_name,password and username"})
     }
     var hashedPassword = await bcrypt.hash(req.body.password, 10);
     try {
@@ -120,7 +120,7 @@ exports.getUser = async function (req, res) {
     const credentials = Buffer.from(base64Credentials, 'base64').toString('ascii');
     const [usernamegetting, passwordgetting] = credentials.split(':');
     if (!usernamegetting || !passwordgetting) {
-        return res.status(403).json("Invalid Authentication Details");
+        return res.status(401).json("Invalid Authentication Details");
     }
 
 
@@ -164,7 +164,7 @@ exports.editUser = async function (req, res) {
     const credentials = Buffer.from(base64Credentials, 'base64').toString('ascii');
     const [usernamegetting, passwordgetting] = credentials.split(':');
     if (!usernamegetting || !passwordgetting) {
-        return res.status(403).json("Invalid Authentication Details");
+        return res.status(401).json("Invalid Authentication Details");
     }
     const usr= await db.user.findOne({ where: { username: usernamegetting} })
     if(usr===null)
