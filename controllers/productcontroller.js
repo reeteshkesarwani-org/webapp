@@ -38,11 +38,11 @@ exports.createProduct = async function (req, res) {
     const credentials = Buffer.from(base64Credentials, 'base64').toString('ascii');
     const [usernamegetting, passwordgetting] = credentials.split(':');
     if (!usernamegetting || !passwordgetting) {
-        return res.status(403).json("Invalid Authentication Details");
+        return res.status(401).json("Invalid Authentication Details");
     }
     const usr = await db.user.findOne({ where: { username: usernamegetting } })
     if (usr === null) {
-        return res.status(400).json('Invalid Authentication Details');
+        return res.status(401).json('Invalid Authentication Details');
     }
     else {
         let passcheck = false;
@@ -106,7 +106,7 @@ exports.updateProduct = async function (req, res) {
     const credentials = Buffer.from(base64Credentials, 'base64').toString('ascii');
     const [usernamegetting, passwordgetting] = credentials.split(':');
     if (!usernamegetting || !passwordgetting) {
-        return res.status(403).json("Invalid Authentication Details");
+        return res.status(401).json("Invalid Authentication Details");
     }
     const usr = await db.user.findOne({ where: { username: usernamegetting } });
     const product1= await db.product.findOne({where:{id:req.params.productid}});
@@ -117,7 +117,7 @@ exports.updateProduct = async function (req, res) {
     const productownerid=product1.owner_user_id;
     
     if (usr === null) {
-        return res.status(400).json('Invalid Authentication Details');
+        return res.status(401).json('Invalid Authentication Details');
     }
     if(productownerid!=usr.id)
     {
@@ -183,7 +183,7 @@ exports.patchProduct = async function (req, res) {
     const credentials = Buffer.from(base64Credentials, 'base64').toString('ascii');
     const [usernamegetting, passwordgetting] = credentials.split(':');
     if (!usernamegetting || !passwordgetting) {
-        return res.status(403).json("Invalid Authentication Details");
+        return res.status(401).json("Invalid Authentication Details");
     }
     const usr = await db.user.findOne({ where: { username: usernamegetting } });
     const product1= await db.product.findOne({where:{id:req.params.productid}});
@@ -194,7 +194,7 @@ exports.patchProduct = async function (req, res) {
     const productownerid=product1.owner_user_id;
     
     if (usr === null) {
-        return res.status(400).json('Invalid Authentication Details');
+        return res.status(401).json('Invalid Authentication Details');
     }
     if(productownerid!=usr.id)
     {
