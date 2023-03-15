@@ -38,7 +38,7 @@ source "amazon-ebs" "my-ami" {
     ami_description = "AMI for CSYE 6225"
 
 //  
-  source_ami = "ami-0dfcb1ef8550277af"
+  source_ami = "ami-005f9685cb30f234b"
   ami_users = [
     "793231301303","204539555313"
   ]
