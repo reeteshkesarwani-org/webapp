@@ -50,8 +50,10 @@ exports.createUser = async function (req, res) {
     var password = req.body.password;
     if(!first_name || !last_name || !username || !password)
     {
+
         logger.error("data is incomplete please provide value for first_name,last_name,password and username");
         return res.status(206).send({message: "data is incomplete please provide value for first_name,last_name,password and username"})
+
     }
     var hashedPassword = await bcrypt.hash(req.body.password, 10);
     try {

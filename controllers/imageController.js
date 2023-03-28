@@ -162,7 +162,7 @@ const addImage = async (req, res, next) => {
           if (productIdCheck != productid) {
             logger.error("Bad Request: Invalid Product Id");
             return res.status(400).send({
-              error: "Bad Request: Invalid Product Id",
+              error: "Bad Request: Invalid product Id",
             });
           }
       
