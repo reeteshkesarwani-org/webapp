@@ -16,6 +16,11 @@ mkdir ~/webapp
 unzip webapp.zip -d ~/webapp
 cd ~/webapp && npm i
 
+sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl \
+    -a fetch-config \
+    -m ec2 \
+    -c file: ..\cloudwatchconfig.json \
+    -s
 
 
 sudo mv /tmp/webapp.service /etc/systemd/system/webapp.service
