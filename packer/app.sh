@@ -16,12 +16,8 @@ mkdir ~/webapp
 unzip webapp.zip -d ~/webapp
 cd ~/webapp && npm i
 
-sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl \
-    -a fetch-config \
-    -m ec2 \
-    -c file: ..\cloudwatchconfig.json \
-    -s
 
+sudo yum install amazon-cloudwatch-agent
 
 sudo mv /tmp/webapp.service /etc/systemd/system/webapp.service
 sudo systemctl enable webapp.service
