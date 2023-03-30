@@ -1,8 +1,8 @@
 var userService = require("../services/services");
 var bcrypt = require('bcrypt');
 var mysql = require("mysql");
-const Images = db.images;
 var db = require("../configuration/sequelize");
+const Images = db.images;
 const { response } = require("express");
 const user = require("../models/user");
 const { NUMBER } = require("sequelize");
