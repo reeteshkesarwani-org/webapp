@@ -2,6 +2,7 @@ var userService = require("../services/services");
 var bcrypt = require('bcrypt');
 var mysql = require("mysql");
 var db = require("../configuration/sequelize");
+const Images = db.images;
 const { response } = require("express");
 const user = require("../models/user");
 const { NUMBER } = require("sequelize");
@@ -372,6 +373,14 @@ exports.deleteProduct = async function (req, res) {
                     id: req.params.productid
                 }
             })
+            const images = await Images.findAll({ where: {product_id: id}});
+            for (let i = 0; i < images.length; i++) {
+                const params = {
+                    Bucket: process.env.BUCKET_NAME,
+                    Key: images[i].dataValues.s3_bucket_path.split("/").pop(),
+                };
+                await s3.send(new DeleteObjectCommand(params));
+            }
             logger.info("product got deleted successfully");
             return res.status(200).json("product got deleted successfully");
         }
