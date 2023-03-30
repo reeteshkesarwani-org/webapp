@@ -37,6 +37,7 @@ const validateEmail = (email) => {
 
 
 exports.createProduct = async function (req, res) {
+    sdc.increment('createProduct/product');
 
     const auth = req.headers.authorization;
     if (!auth || auth.indexOf('Basic ') === -1) return res.status(403).json("Forbidden Request")
@@ -113,7 +114,7 @@ exports.createProduct = async function (req, res) {
 };
 
 exports.updateProduct = async function (req, res) {
-
+    sdc.increment('updateProduct/product');
     const auth = req.headers.authorization;
     if (!auth || auth.indexOf('Basic ') === -1) return res.status(403).json("Forbidden Request")
     const base64Credentials = auth.split(' ')[1];
@@ -201,7 +202,7 @@ exports.updateProduct = async function (req, res) {
 };
 
 exports.patchProduct = async function (req, res) {
-
+    sdc.increment('patchProduct/product');
     const auth = req.headers.authorization;
     if (!auth || auth.indexOf('Basic ') === -1) return res.status(403).json("Forbidden Request")
     const base64Credentials = auth.split(' ')[1];
@@ -331,6 +332,7 @@ exports.getProduct = async function (req, res) {
 };
 
 exports.deleteProduct = async function (req, res) {
+    sdc.increment('deleteProduct/product');
     const auth = req.headers.authorization;
     if (!auth || auth.indexOf('Basic ') === -1) return res.status(403).json("Forbidden Request")
     const base64Credentials = auth.split(' ')[1];
