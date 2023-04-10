@@ -2,6 +2,7 @@ var userService = require("../services/services");
 var bcrypt = require('bcrypt');
 var mysql = require("mysql");
 var db = require("../configuration/sequelize");
+const Images = db.images;
 const { response } = require("express");
 const user = require("../models/user");
 const { NUMBER } = require("sequelize");
@@ -37,6 +38,7 @@ const validateEmail = (email) => {
 
 
 exports.createProduct = async function (req, res) {
+    sdc.increment('createProduct/product');
 
     const auth = req.headers.authorization;
     if (!auth || auth.indexOf('Basic ') === -1) return res.status(403).json("Forbidden Request")
@@ -113,7 +115,7 @@ exports.createProduct = async function (req, res) {
 };
 
 exports.updateProduct = async function (req, res) {
-
+    sdc.increment('updateProduct/product');
     const auth = req.headers.authorization;
     if (!auth || auth.indexOf('Basic ') === -1) return res.status(403).json("Forbidden Request")
     const base64Credentials = auth.split(' ')[1];
@@ -201,7 +203,7 @@ exports.updateProduct = async function (req, res) {
 };
 
 exports.patchProduct = async function (req, res) {
-
+    sdc.increment('patchProduct/product');
     const auth = req.headers.authorization;
     if (!auth || auth.indexOf('Basic ') === -1) return res.status(403).json("Forbidden Request")
     const base64Credentials = auth.split(' ')[1];
@@ -331,6 +333,7 @@ exports.getProduct = async function (req, res) {
 };
 
 exports.deleteProduct = async function (req, res) {
+    sdc.increment('deleteProduct/product');
     const auth = req.headers.authorization;
     if (!auth || auth.indexOf('Basic ') === -1) return res.status(403).json("Forbidden Request")
     const base64Credentials = auth.split(' ')[1];
@@ -370,6 +373,14 @@ exports.deleteProduct = async function (req, res) {
                     id: req.params.productid
                 }
             })
+            const images = await Images.findAll({ where: {product_id: id}});
+            for (let i = 0; i < images.length; i++) {
+                const params = {
+                    Bucket: process.env.BUCKET_NAME,
+                    Key: images[i].dataValues.s3_bucket_path.split("/").pop(),
+                };
+                await s3.send(new DeleteObjectCommand(params));
+            }
             logger.info("product got deleted successfully");
             return res.status(200).json("product got deleted successfully");
         }
