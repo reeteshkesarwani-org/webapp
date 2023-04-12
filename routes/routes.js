@@ -6,7 +6,7 @@ const upload=require("../upload");
 module.exports = (app) => {
     app.post("/v1/user", control.createUser);
      app.get("/v1/user/:userid", control.getUser);
-     app.get("/health", control.health);
+     app.get("/healthz", control.health);
      app.put("/v1/user/:userid", control.editUser);
      app.post("/v1/product",productcontroller.createProduct);
      app.get("/v1/product/:productid",productcontroller.getProduct);
