@@ -18,7 +18,7 @@ app.listen(process.env.PORT,(err)=>
     console.log("on port 3000")
   }
 });
-// app.get("/healthz",(req,res)=>{
-//   res.status(200).json();
-// })
+app.get("/healthz",(req,res)=>{
+  res.status(200).json();
+})
 module.exports=app;
